@@ -10,7 +10,7 @@ import { formatPrice, truncate } from '../../utils/helpers'
  * @param {Function} [props.onEdit]  — called when Edit is clicked (admin)
  * @param {Function} [props.onDelete]— called when Delete is clicked (admin)
  */
-export default function GunCard({ gun, onSelect, onEdit, onDelete }) {
+export default function GunCard({ gun, onSelect, onEdit, onDelete, onFavoriteChange }) {
   const imgSrc = gun.image_url || gun.image || '/guns/pistol.svg'
   const category = gun.type || gun.category || '—'
   const caliber = gun.caliber || gun.difficulty || ''
@@ -49,7 +49,7 @@ export default function GunCard({ gun, onSelect, onEdit, onDelete }) {
 
       {/* Floating actions row */}
       <div className="card-actions">
-        <FavoriteButton gunId={gun.id || gun.name} />
+        <FavoriteButton gunId={gun.id || gun.name} onToggle={onFavoriteChange} />
 
         {onEdit && (
           <button

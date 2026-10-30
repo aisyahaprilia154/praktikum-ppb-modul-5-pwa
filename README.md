@@ -64,3 +64,15 @@ Build command adalah `npm run build` dan output directory adalah `dist`. Perubah
 ## Instalasi pada smartphone
 
 Buka URL HTTPS hasil deploy menggunakan browser smartphone. Di Android pilih Install app atau Add to Home Screen. Di iPhone pilih Share > Add to Home Screen. Konfirmasi instalasi dilakukan langsung pada perangkat yang akan digunakan.
+
+## Hasil deploy dan verifikasi akhir
+
+Website produksi: https://praktikum-ppb-modul-5-pwa.vercel.app
+
+Repository sudah terhubung ke project Vercel. Environment Production terpasang dan build pertama berstatus Ready. Halaman, manifest, service worker, serta ikon dapat diakses dengan HTTP 200.
+
+Pemeriksaan berhasil untuk CRUD produk, CRUD ulasan, favorit server, penyimpanan profil dan draft, validasi gambar, serta fallback data URL. Melalui website produksi, tambah produk dan perubahan harga berhasil tersimpan di Supabase; halaman favorit menampilkan produk yang ditandai. Semua data uji dibersihkan setelah pemeriksaan.
+
+Draft juga diuji langsung melalui form: simpan, pindah halaman, lalu pulihkan. Tampilan mobile diperiksa pada viewport 390 x 844. Cache app shell diuji menggunakan build produksi lokal: setelah kunjungan awal, server preview dihentikan dan aplikasi tetap berhasil dimuat ulang dari service worker. Ini menguji ketersediaan app shell, bukan ketersediaan API ketika jaringan terputus.
+
+Instalasi pada smartphone fisik perlu dilakukan dari perangkat yang digunakan melalui langkah Add to Home Screen di atas.
