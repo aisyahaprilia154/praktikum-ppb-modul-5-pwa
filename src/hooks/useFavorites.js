@@ -12,7 +12,8 @@ const LOCAL_KEY = 'bore_barrel_favorites'
 const readLocalFavs = () => {
   try {
     const raw = localStorage.getItem(LOCAL_KEY)
-    return raw ? JSON.parse(raw) : []
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
   } catch {
     return []
   }
@@ -48,6 +49,11 @@ export function useFavorites() {
 
       if (response.success) {
         setFavorites(response.data || [])
+        writeLocalFavs((response.data || []).map((favorite) =>
+          typeof favorite === 'object' && favorite !== null
+            ? (favorite.product_id ?? favorite.id ?? favorite.recipe_id)
+            : favorite,
+        ))
         setIsLocal(false)
       } else {
         throw new Error(response.message)

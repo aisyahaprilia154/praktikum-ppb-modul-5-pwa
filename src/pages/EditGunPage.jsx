@@ -269,7 +269,7 @@ export default function EditGunPage({ gun, gunId, onBack, onSuccess }) {
       name: formData.name.trim(),
       type: formData.type || (formData.category === 'minuman' ? 'Rifle' : 'Pistol'),
       caliber: formData.caliber || '9mm',
-      price: Number(formData.price) || 500,
+      price: Number(formData.price),
       category: formData.category || 'makanan',
       description: formData.description.trim() || `${formData.type} caliber ${formData.caliber}.`,
       image_url: imagePreview || currentImageUrl || '/guns/pistol.svg',

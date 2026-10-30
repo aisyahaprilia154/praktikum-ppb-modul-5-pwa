@@ -1,46 +1,66 @@
-# Bore & Barrel
+# Praktikum PPB Modul 5 React PWA II
 
-A dummy gunshop storefront built as a Progressive Web App. It runs offline
-with an app shell, a web app manifest, and a service worker, and uses React +
-Vite + Tailwind CSS.
+Project berdasarkan bagian Langkah Kerja modul, menggunakan kode dasar https://github.com/SekarBnY/PWA2_PrakPPB.
 
-## Setup
+## Menjalankan project
 
-```bash
+Buka `PWA-Modul-5.code-workspace` di Visual Studio Code, lalu jalankan:
+
+```powershell
 npm install
-npm run dev      # dev server with HMR
+npm run dev
 ```
 
-Other scripts:
+Build dan preview produksi:
 
-```bash
-npm run build    # production build to dist/
-npm run preview  # serve the production build
-npm run lint     # oxlint
+```powershell
+npm run build
+npm run preview
 ```
 
-## Structure
+Node.js yang digunakan untuk pemeriksaan adalah v24.13.0. File `.env` lokal sudah diisi sesuai modul. Saat memindahkan project, salin `.env.example` menjadi `.env`, lalu restart server.
 
+## Implementasi langkah kerja
+
+- React dan Vite sebagai SPA; navigasi katalog, favorit, profil, About, Contact, tambah, edit, dan detail.
+- Axios dengan konfigurasi environment dan penanganan error.
+- Hooks produk, favorit, dan ulasan; services CRUD produk, ulasan, favorit, upload, dan profil.
+- Katalog dengan pencarian, kategori, urutan harga/nama, serta tampilan loading dan error.
+- Form tambah/edit dengan validasi, pilihan gambar preset/upload, spesifikasi, langkah perawatan, dan draft localStorage.
+- Konfirmasi sebelum menghapus produk.
+- Favorit server dengan cadangan localStorage; profil dan draft tersimpan lokal.
+- Ikon PWA 192/512, manifest, service worker, cache app shell, indikator offline, dan prompt instalasi.
+- Dependensi lucide-react, vite-plugin-pwa, Tailwind CSS, dan Axios.
+- Konfigurasi Vercel tersedia di `vercel.json`.
+
+## Pemeriksaan
+
+```powershell
+npm run lint
+npm run verify:api
 ```
-.
-├── index.html              # HTML shell
-├── vite.config.js          # Vite + vite-plugin-pwa (manifest + service worker)
-├── public/                 # static assets served at /
-│   ├── icon-192.png / icon-512.png / icon.svg
-│   └── guns/               # product images
-└── src/
-    ├── main.jsx            # entry, mounts <App/>
-    ├── App.jsx             # app shell: tab state, header/nav/content/footer
-    ├── App.css             # app shell styles
-    ├── index.css           # global styles
-    ├── components/
-    │   ├── Header.jsx      # brand + nav
-    │   ├── GunCard.jsx     # single product card
-    │   └── Footer.jsx
-    ├── data/
-    │   └── guns.js         # dummy product data
-    └── pages/
-        ├── Catalog.jsx     # product grid
-        ├── About.jsx
-        └── Contact.jsx
-```
+
+`verify:api` membuat satu produk sementara, menguji baca/tambah/ubah/hapus, ulasan, serta favorit, lalu membersihkan data uji. Pemeriksaan juga mencakup draft, identitas/profil lokal, validasi gambar, dan fallback unggah gambar. Jangan menghentikan pemeriksaan sebelum pembersihan selesai.
+
+Backend modul saat diperiksa belum memiliki bucket Storage bernama `guns`. Sesuai fallback pada modul, file gambar dikonversi menjadi data URL dan dapat disimpan bersama produk. Ini berbeda dari URL blob sementara yang tidak bertahan setelah reload.
+
+App shell dan aset lokal tersedia offline setelah kunjungan online pertama. Operasi CRUD/ulasan membutuhkan API. Saat offline, katalog statis lokal tetap tersedia; favorit dan draft menggunakan localStorage. Untuk uji manual, buka versi produksi sekali saat online, tunggu service worker aktif, aktifkan Offline di DevTools > Network, lalu reload.
+
+Lint selesai tanpa error; tiga peringatan set-state-in-effect berasal dari hooks modul. Audit dependensi setelah pembaruan menyisakan empat temuan rendah pada rantai deepmerge/Workbox. Downgrade besar plugin PWA tidak diterapkan.
+
+## GitHub dan Vercel
+
+Repository project: https://github.com/aisyahaprilia154/praktikum-ppb-modul-5-pwa
+
+Remote `origin` mengarah ke repository project sendiri, sedangkan `upstream` menunjuk kode dasar modul. File `.env`, `.vercel`, `node_modules`, `dist`, dan hasil service worker pengembangan tidak dimasukkan ke Git.
+
+Environment Vercel Production menggunakan:
+
+- `VITE_API_BASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+Build command adalah `npm run build` dan output directory adalah `dist`. Perubahan selanjutnya dikirim dengan `git add .`, commit, lalu `git push origin main`.
+
+## Instalasi pada smartphone
+
+Buka URL HTTPS hasil deploy menggunakan browser smartphone. Di Android pilih Install app atau Add to Home Screen. Di iPhone pilih Share > Add to Home Screen. Konfirmasi instalasi dilakukan langsung pada perangkat yang akan digunakan.

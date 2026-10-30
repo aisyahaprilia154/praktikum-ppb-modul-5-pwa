@@ -52,7 +52,7 @@ class UploadService {
           data: { url: publicUrl, filename: fileName },
         }
       } catch (err) {
-        console.warn('Supabase bucket upload not accessible, creating base64 data URL:', err)
+        console.warn('Storage upload unavailable; using a persistent image data URL.', err.response?.data?.message || err.message)
         // Read file as base64 Data URL so the image displays and persists
         const dataUrl = await new Promise((resolve, reject) => {
           const reader = new FileReader()
