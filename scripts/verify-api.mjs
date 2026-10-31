@@ -51,9 +51,9 @@ try {
       assert.ok(list.data.some((review) => review.id === reviewId))
     })
     if (reviewId) await check('Update and delete review', async () => {
-      await reviews.updateReview(reviewId, { rating: 5, comment: 'Verification updated' })
+      await reviews.updateReview(reviewId, { rating: 5, comment: 'Verification updated' }, userId)
       assert.equal((await reviews.getReviews(productId)).data.find((r) => r.id === reviewId).rating, 5)
-      await reviews.deleteReview(reviewId)
+      await reviews.deleteReview(reviewId, userId)
       assert.ok(!(await reviews.getReviews(productId)).data.some((r) => r.id === reviewId))
       reviewId = undefined
     })

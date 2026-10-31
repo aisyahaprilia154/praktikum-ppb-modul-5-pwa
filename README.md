@@ -1,78 +1,66 @@
-# Praktikum PPB Modul 5 React PWA II
+# Praktikum PPB Modul 5 PWA II
 
-Project berdasarkan bagian Langkah Kerja modul, menggunakan kode dasar https://github.com/SekarBnY/PWA2_PrakPPB.
+Website: https://praktikum-ppb-modul-5-pwa.vercel.app
 
-## Menjalankan project
+Repository: https://github.com/aisyahaprilia154/praktikum-ppb-modul-5-pwa
 
-Buka `PWA-Modul-5.code-workspace` di Visual Studio Code, lalu jalankan:
+Project React + Vite berdasarkan langkah kerja modul dan tambahan tantangan poin 1–9. Kode awal: https://github.com/SekarBnY/PWA2_PrakPPB.
+
+## Menjalankan
+
+Buka `PWA-Modul-5.code-workspace` menggunakan Visual Studio Code.
 
 ```powershell
 npm install
 npm run dev
 ```
 
-Build dan preview produksi:
-
-```powershell
-npm run build
-npm run preview
-```
-
-Node.js yang digunakan untuk pemeriksaan adalah v24.13.0. File `.env` lokal sudah diisi sesuai modul. Saat memindahkan project, salin `.env.example` menjadi `.env`, lalu restart server.
-
-## Implementasi langkah kerja
-
-- React dan Vite sebagai SPA; navigasi katalog, favorit, profil, About, Contact, tambah, edit, dan detail.
-- Axios dengan konfigurasi environment dan penanganan error.
-- Hooks produk, favorit, dan ulasan; services CRUD produk, ulasan, favorit, upload, dan profil.
-- Katalog dengan pencarian, kategori, urutan harga/nama, serta tampilan loading dan error.
-- Form tambah/edit dengan validasi, pilihan gambar preset/upload, spesifikasi, langkah perawatan, dan draft localStorage.
-- Konfirmasi sebelum menghapus produk.
-- Favorit server dengan cadangan localStorage; profil dan draft tersimpan lokal.
-- Ikon PWA 192/512, manifest, service worker, cache app shell, indikator offline, dan prompt instalasi.
-- Dependensi lucide-react, vite-plugin-pwa, Tailwind CSS, dan Axios.
-- Konfigurasi Vercel tersedia di `vercel.json`.
-
-## Pemeriksaan
+Jika `.env` belum ada, salin `.env.example` menjadi `.env`. URL Supabase dan publishable key mengikuti modul. Jangan gunakan service-role key di aplikasi browser. Environment Production sudah diatur pada project Vercel.
 
 ```powershell
 npm run lint
-npm run verify:api
+npm run build
+npm run preview
+npm run verify:challenges
 ```
 
-`verify:api` membuat satu produk sementara, menguji baca/tambah/ubah/hapus, ulasan, serta favorit, lalu membersihkan data uji. Pemeriksaan juga mencakup draft, identitas/profil lokal, validasi gambar, dan fallback unggah gambar. Jangan menghentikan pemeriksaan sebelum pembersihan selesai.
+## Implementasi poin 1–9
 
-Backend modul saat diperiksa belum memiliki bucket Storage bernama `guns`. Sesuai fallback pada modul, file gambar dikonversi menjadi data URL dan dapat disimpan bersama produk. Ini berbeda dari URL blob sementara yang tidak bertahan setelah reload.
+| No. | Permintaan | Implementasi dan cara memeriksa |
+| --- | --- | --- |
+| 1 | Share link unik | Tombol share pada kartu dan detail. Buka tautan `/#/gun/ID` di tab baru atau reload; produk yang sama dimuat dari ID server. Copy link juga tersedia. |
+| 2 | Lazy load | Halaman dimuat melalui React.lazy dan Suspense. Build menghasilkan chunk terpisah per halaman. Gambar katalog memakai loading=lazy dan decoding=async. |
+| 3 | Query caching | TanStack Query membagi cache katalog/detail/favorit/ulasan, mendeduplikasi permintaan, dan menandai cache usang setelah perubahan. Cache segar selama 2 menit, disimpan lokal maksimal 24 jam untuk kunjungan ulang/offline. Tombol Refresh catalog memuat ulang secara eksplisit. |
+| 4 | About dan Contact di profil | Kedua bagian berada di halaman Profile, tidak lagi menjadi menu utama terpisah. |
+| 5 | Semua draft di profil | Profile menampilkan daftar draft create/edit, nama, waktu simpan, tombol Continue draft, dan hapus draft. Continue langsung memulihkan form dari draft yang dipilih. |
+| 6 | Soft delete / arsip | Archive menggantikan hapus produk permanen. Produk disembunyikan dari katalog/favorit dan dapat dipulihkan dari Profile > Product archive. Record tetap berada di database. |
+| 7 | CRUD dan reaksi ulasan | Tambah/baca ulasan, edit/hapus milik identitas browser sendiri, thumbs up/down dengan jumlah dan status pilihan. Reaksi yang sama membatalkan suara, reaksi lain mengganti suara. Data disimpan di server. |
+| 8 | Edit profil di halaman baru | Tombol Edit profile membuka `/#/profile/edit` untuk nama, bio, dan avatar. Save kembali ke profil; formulir tidak berada di bawah profil. |
+| 9 | Keranjang dan checkout WhatsApp | Menu Merch & Cart berisi T-shirt, notebook, dan stiker. Tambah/kurangi/hapus, jumlah, total, dan localStorage. Checkout membuka WhatsApp dengan pesan “Hi aku mau pesan …” berisi barang dan total. Keranjang khusus merchandise non-senjata untuk simulasi praktikum. |
 
-App shell dan aset lokal tersedia offline setelah kunjungan online pertama. Operasi CRUD/ulasan membutuhkan API. Saat offline, katalog statis lokal tetap tersedia; favorit dan draft menggunakan localStorage. Untuk uji manual, buka versi produksi sekali saat online, tunggu service worker aktif, aktifkan Offline di DevTools > Network, lalu reload.
+Tanpa nomor tujuan yang dikonfigurasi, WhatsApp menampilkan pilihan penerima. Untuk mengarah ke nomor tertentu, tambahkan `VITE_WHATSAPP_NUMBER` dengan format internasional, misalnya `628...`, lalu build/deploy ulang. Aplikasi hanya menyiapkan pesan; pengguna memeriksa dan mengirimnya sendiri.
 
-Lint selesai tanpa error; tiga peringatan set-state-in-effect berasal dari hooks modul. Audit dependensi setelah pembaruan menyisakan empat temuan rendah pada rantai deepmerge/Workbox. Downgrade besar plugin PWA tidak diterapkan.
+## Penyimpanan dan backend
 
-## GitHub dan Vercel
+Katalog, ulasan, dan favorit menggunakan backend Supabase modul. Database praktikum tidak menyediakan kolom deleted_at dan tabel reaksi. Metadata berversi disimpan dalam field teks yang sudah tersedia:
 
-Repository project: https://github.com/aisyahaprilia154/praktikum-ppb-modul-5-pwa
+- `products.specs`: entri `__pwa_meta_v1__:` menyimpan archived_at, langkah form, grade, dan status featured. Normalizer menyembunyikannya dari daftar spesifikasi yang ditampilkan.
+- `reviews.comment`: entri `__pwa_review_v1__:` menyimpan teks ulasan dan pilihan reaksi per identitas browser. Ulasan lama berbentuk teks biasa tetap terbaca. Perubahan reaksi menggunakan pembandingan nilai lama dan retry untuk mengurangi benturan pembaruan.
 
-Remote `origin` mengarah ke repository project sendiri, sedangkan `upstream` menunjuk kode dasar modul. File `.env`, `.vercel`, `node_modules`, `dist`, dan hasil service worker pengembangan tidak dimasukkan ke Git.
+Dengan demikian fitur baru bekerja tanpa meminta akses administrator untuk migrasi database. Profil, draft, keranjang, dan cadangan query berada di browser. Identitas ulasan memakai UUID lokal sesuai pola modul; ini bukan sistem login terverifikasi untuk penggunaan produksi dengan data sensitif.
 
-Environment Vercel Production menggunakan:
+Bucket Storage `guns` belum tersedia pada backend modul. Upload tetap mendukung validasi gambar dan fallback data URL permanen. Gambar dan draft tidak bergantung pada URL blob sementara.
 
-- `VITE_API_BASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
+## PWA dan deploy
 
-Build command adalah `npm run build` dan output directory adalah `dist`. Perubahan selanjutnya dikirim dengan `git add .`, commit, lalu `git push origin main`.
+Manifest, ikon 192/512, service worker, cache app shell, dan prompt instalasi tetap aktif. Service worker memasukkan chunk halaman lazy dalam precache produksi. Setelah kunjungan online pertama, halaman dan aset lokal dapat dimuat offline; operasi tulis API membutuhkan jaringan.
 
-## Instalasi pada smartphone
+GitHub terhubung ke Vercel dan push ke main memicu build produksi. Build command: `npm run build`; output: `dist`. File `.env`, `.vercel`, node_modules, dist, dan service worker pengembangan tidak dimasukkan ke Git.
 
-Buka URL HTTPS hasil deploy menggunakan browser smartphone. Di Android pilih Install app atau Add to Home Screen. Di iPhone pilih Share > Add to Home Screen. Konfirmasi instalasi dilakukan langsung pada perangkat yang akan digunakan.
+Di HP, buka website HTTPS lalu pilih Install app atau Add to Home Screen. iPhone: Share > Add to Home Screen.
 
-## Hasil deploy dan verifikasi akhir
+## Validasi
 
-Website produksi: https://praktikum-ppb-modul-5-pwa.vercel.app
+`npm run verify:challenges` menguji tautan, metadata produk, cache dan invalidasi, daftar draft, arsip/pemulihan, CRUD ulasan, kepemilikan identitas, pergantian reaksi, profil, dan pesan WhatsApp. Skrip membuat record sementara terpisah dan membersihkannya setelah pemeriksaan. Jangan menghentikan proses sebelum pembersihan selesai.
 
-Repository sudah terhubung ke project Vercel. Environment Production terpasang dan build pertama berstatus Ready. Halaman, manifest, service worker, serta ikon dapat diakses dengan HTTP 200.
-
-Pemeriksaan berhasil untuk CRUD produk, CRUD ulasan, favorit server, penyimpanan profil dan draft, validasi gambar, serta fallback data URL. Melalui website produksi, tambah produk dan perubahan harga berhasil tersimpan di Supabase; halaman favorit menampilkan produk yang ditandai. Semua data uji dibersihkan setelah pemeriksaan.
-
-Draft juga diuji langsung melalui form: simpan, pindah halaman, lalu pulihkan. Tampilan mobile diperiksa pada viewport 390 x 844. Cache app shell diuji menggunakan build produksi lokal: setelah kunjungan awal, server preview dihentikan dan aplikasi tetap berhasil dimuat ulang dari service worker. Ini menguji ketersediaan app shell, bukan ketersediaan API ketika jaringan terputus.
-
-Instalasi pada smartphone fisik perlu dilakukan dari perangkat yang digunakan melalui langkah Add to Home Screen di atas.
+Pemeriksaan browser juga mencakup halaman edit profil, simpan/pulihkan draft dari Profile, tautan share, tambah/edit ulasan dan reaksi, arsip lalu restore, keranjang, serta tampilan mobile. Sampel data server untuk pengujian telah dibersihkan.

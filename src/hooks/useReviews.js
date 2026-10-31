@@ -1,77 +1,28 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import reviewService from '../services/reviewService'
-
-// ---------------------------------------------------------------------------
-// useReviews — fetch reviews for a specific product.
-// ---------------------------------------------------------------------------
+import { getUserIdentifier } from '../services/userService'
 
 export function useReviews(gunId) {
-  const [reviews, setReviews] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  const fetchReviews = useCallback(async () => {
-    if (!gunId) {
-      setLoading(false)
-      return
-    }
-    try {
-      setLoading(true)
-      setError(null)
-
-      const response = await reviewService.getReviews(gunId)
-
-      if (response.success) {
-        setReviews(response.data || [])
-      } else {
-        setError(response.message || 'Failed to fetch reviews.')
-      }
-    } catch (err) {
-      setError(err.message || 'An error occurred while fetching reviews.')
-      setReviews([])
-    } finally {
-      setLoading(false)
-    }
-  }, [gunId])
-
-  useEffect(() => {
-    fetchReviews()
-  }, [fetchReviews])
-
-  return { reviews, loading, error, refetch: fetchReviews }
+  const userId = getUserIdentifier()
+  const query = useQuery({ queryKey: ['reviews', String(gunId), userId],
+    queryFn: () => reviewService.getReviews(gunId, userId), enabled: Boolean(gunId) && !String(gunId).startsWith('local-') })
+  return { reviews: query.data?.data || [], loading: query.isLoading, error: query.error?.message || null, refetch: query.refetch }
 }
-
-// ---------------------------------------------------------------------------
-// useCreateReview — submit a new review for a product.
-// ---------------------------------------------------------------------------
-
+export function useReviewActions(gunId) {
+  const client = useQueryClient()
+  const mutation = useMutation({ mutationFn: ({ action, id, data, vote }) => {
+    if (action === 'create') return reviewService.createReview(gunId, { ...data, user_identifier: getUserIdentifier() })
+    if (action === 'update') return reviewService.updateReview(id, data)
+    if (action === 'delete') return reviewService.deleteReview(id)
+    return reviewService.voteReview(id, vote)
+  }, onSuccess: () => client.invalidateQueries({ queryKey: ['reviews', String(gunId)] }) })
+  return mutation
+}
 export function useCreateReview() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState(false)
-
-  const createReview = async (gunId, reviewData) => {
-    try {
-      setLoading(true)
-      setError(null)
-      setSuccess(false)
-
-      const response = await reviewService.createReview(gunId, reviewData)
-
-      if (response.success) {
-        setSuccess(true)
-        return response.data
-      } else {
-        setError(response.message || 'Failed to submit review.')
-        return null
-      }
-    } catch (err) {
-      setError(err.message || 'An error occurred while submitting review.')
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { createReview, loading, error, success }
+  const client = useQueryClient()
+  const mutation = useMutation({ mutationFn: ({ gunId, data }) => reviewService.createReview(gunId, data),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['reviews'] }) })
+  return { createReview: async (gunId, data) => {
+    try { return (await mutation.mutateAsync({ gunId, data })).data } catch { return null }
+  }, loading: mutation.isPending, error: mutation.error?.message || null, success: mutation.isSuccess }
 }

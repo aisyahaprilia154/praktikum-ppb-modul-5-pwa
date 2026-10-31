@@ -100,7 +100,8 @@ export const formatDraftTime = (timestamp) => {
  */
 export const getAllDraftIds = () => {
   try {
-    return Object.keys(localStorage)
+    const keys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index)).filter(Boolean)
+    return keys
       .filter((k) => k.startsWith(PREFIX) && !k.endsWith(TS_SUFFIX))
       .map((k) => k.slice(PREFIX.length))
   } catch {

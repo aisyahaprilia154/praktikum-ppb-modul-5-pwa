@@ -1,0 +1,56 @@
+.header-brand-button { border: 0; background: transparent; color: inherit; display: flex; align-items: center; gap: 10px; padding: 0; cursor: pointer; text-align: left; }
+.header { flex-wrap: wrap; }
+.nav { gap: 18px; flex-wrap: wrap; }
+.feature-page { padding: 28px 0; display: flex; flex-direction: column; gap: 24px; }
+.feature-page .masthead, .profile-page .masthead { padding-top: 16px; }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; color: var(--brass); font-weight: 700; margin: 0 0 10px; }
+.inline-actions, .review-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.record-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.record-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.record-row:last-child { border-bottom: 0; }
+.record-copy { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+.record-copy h2, .record-copy p { margin: 0; }
+.record-copy span, .record-copy p { font-size: .88rem; color: var(--steel); }
+.profile-card h2 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 1.3rem; }
+.profile-card p { margin: 0; line-height: 1.6; }
+.profile-card-top { flex-wrap: wrap; }
+.profile-avatar { width: 76px; height: 76px; object-fit: cover; border-radius: 50%; flex: 0 0 76px; }
+.profile-id-row { min-width: 0; flex-wrap: wrap; }
+.mono-badge { overflow-wrap: anywhere; white-space: normal; max-width: 100%; }
+.profile-stats .stat-label { display: block; }
+.archive-row { padding: 20px; background: #fff; border: 1px solid var(--line); margin-bottom: 14px; border-radius: 5px; }
+.archive-row img { object-fit: cover; border-radius: 4px; }
+.card { overflow: visible; }
+.card-img { border-radius: 4px 4px 0 0; }
+.card-actions { position: relative; inset: auto; padding: 10px 14px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; z-index: auto; }
+.card-act-btn { box-shadow: none; }
+.share-control { position: relative; }
+.share-popover { width: min(300px, 76vw); position: absolute; z-index: 15; left: 0; bottom: calc(100% + 8px); padding: 14px; border: 1px solid var(--line); border-radius: 5px; background: #fff; box-shadow: 0 8px 25px #18222c25; display: flex; flex-direction: column; gap: 10px; }
+.card .share-popover { left: -45px; width: 230px; max-width: calc(100vw - 65px); }
+.share-popover label { font-size: .82rem; font-weight: 600; }
+.share-popover input { font-size: .8rem; }
+.reaction-btn { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); padding: 8px 12px; background: #fff; color: var(--steel); border-radius: 5px; font: inherit; cursor: pointer; }
+.reaction-btn.selected { border-color: var(--brass); color: #765518; background: #f9f2df; }
+.review-toolbar { margin-top: 16px; }
+.review-form { display: flex; flex-direction: column; gap: 12px; }
+.review-form h3 { margin: 0; }
+.review-item p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.merch-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.merch-card { display: flex; flex-direction: column; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: 5px; padding: 18px; min-width: 0; }
+.merch-card h3 { margin: 0; font-size: 1.1rem; }
+.merch-card p { margin: 0; color: var(--steel); font-size: .88rem; flex: 1; }
+.merch-card .btn { white-space: normal; font-size: .8rem; }
+.merch-art { height: 150px; display: grid; place-items: center; background: #edf0ed; color: var(--ink); border-radius: 4px; }
+.merch-card:nth-child(2) .merch-art { background: #f3ead6; }
+.merch-card:nth-child(3) .merch-art { background: #e6e9ee; }
+.quantity-control { display: flex; align-items: center; gap: 12px; }
+.quantity-control output { min-width: 24px; text-align: center; }
+.cart-summary { align-self: flex-end; max-width: 420px; width: 100%; display: flex; flex-direction: column; gap: 18px; padding-top: 20px; }
+.cart-summary > div { display: flex; justify-content: space-between; font-size: 1.2rem; gap: 14px; }
+.cart-summary a { text-decoration: none; justify-content: center; }
+button:disabled { cursor: wait; opacity: .6; }
+button, a { touch-action: manipulation; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+@media(max-width: 760px) { .header { gap: 12px; } .header .nav { order: 3; width: 100%; justify-content: flex-start; gap: 20px; } .header-cta { margin-left: auto; } .merch-grid { grid-template-columns: 1fr; } .merch-art { height: 140px; } }
+@media(max-width: 440px) { .header .nav { gap: 16px; } .nav-link { font-size: .82rem; } .record-row { gap: 12px; } .archive-row .btn { width: 100%; justify-content: center; } .profile-card { padding: 18px; } .profile-stats { gap: 12px; } .list-head { gap: 12px; flex-wrap: wrap; } }
+@media(max-width: 440px) { .header .brand { font-size: .95rem; } .header-cta { font-size: .75rem; padding: 7px 9px; } }

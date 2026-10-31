@@ -25,11 +25,11 @@ import ConfirmModal from '../components/modals/ConfirmModal'
  * CreateGunPage — Create a new weapon / hardware item with image upload,
  * draft persistence (auto-save), specs, and assembly steps.
  */
-export default function CreateGunPage({ onBack, onSuccess }) {
+export default function CreateGunPage({ onBack, onSuccess, initialDraft }) {
   // Step state: 'upload' (upload or choose image) or 'form' (enter details)
-  const [currentStep, setCurrentStep] = useState('upload')
+  const [currentStep, setCurrentStep] = useState(initialDraft ? 'form' : 'upload')
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialDraft?.formData || {
     name: '',
     type: 'Pistol',
     caliber: '9mm',
@@ -42,18 +42,18 @@ export default function CreateGunPage({ onBack, onSuccess }) {
   })
 
   const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('')
+  const [imagePreview, setImagePreview] = useState(initialDraft?.uploadedImageUrl || null)
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(initialDraft?.uploadedImageUrl || '')
 
   // Specifications (ingredients in API)
-  const [specs, setSpecs] = useState([
+  const [specs, setSpecs] = useState(initialDraft?.specs || [
     { name: 'Frame', quantity: 'Polymer' },
     { name: 'Action', quantity: 'Striker-Fired' },
     { name: 'Capacity', quantity: '17 rounds' },
   ])
 
   // Maintenance / Assembly Steps (steps in API)
-  const [steps, setSteps] = useState([
+  const [steps, setSteps] = useState(initialDraft?.steps || [
     'Verify firearm is completely unloaded and point in safe direction.',
     'Disassemble slide assembly from receiver frame for routine maintenance.',
   ])
@@ -64,7 +64,7 @@ export default function CreateGunPage({ onBack, onSuccess }) {
   const [successMsg, setSuccessMsg] = useState('')
 
   // Draft management
-  const [showDraftModal, setShowDraftModal] = useState(() => hasDraft('create'))
+  const [showDraftModal, setShowDraftModal] = useState(() => !initialDraft && hasDraft('create'))
   const [draftTimestamp, setDraftTimestamp] = useState(() => getDraftTimestamp('create'))
 
   const handleSaveDraft = useCallback((notify = true) => {
@@ -136,7 +136,9 @@ export default function CreateGunPage({ onBack, onSuccess }) {
     }
 
     setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    const reader = new FileReader()
+    reader.onload = () => setImagePreview(reader.result)
+    reader.readAsDataURL(file)
     setError('')
   }
 

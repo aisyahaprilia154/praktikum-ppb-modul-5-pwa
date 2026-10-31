@@ -1,5 +1,7 @@
 import FavoriteButton from '../common/FavoriteButton'
 import { formatPrice, truncate } from '../../utils/helpers'
+import ShareButton from '../common/ShareButton'
+import { Archive } from 'lucide-react'
 
 /**
  * Product card used in the catalog grid.
@@ -31,6 +33,7 @@ export default function GunCard({ gun, onSelect, onEdit, onDelete, onFavoriteCha
           width="240"
           height="180"
           loading="lazy"
+          decoding="async"
         />
 
         <span className="name display">{gun.name}</span>
@@ -50,6 +53,7 @@ export default function GunCard({ gun, onSelect, onEdit, onDelete, onFavoriteCha
       {/* Floating actions row */}
       <div className="card-actions">
         <FavoriteButton gunId={gun.id || gun.name} onToggle={onFavoriteChange} />
+        <ShareButton gun={gun} compact />
 
         {onEdit && (
           <button
@@ -68,10 +72,10 @@ export default function GunCard({ gun, onSelect, onEdit, onDelete, onFavoriteCha
             type="button"
             className="card-act-btn card-act-btn--danger"
             onClick={(e) => { e.stopPropagation(); onDelete(gun) }}
-            aria-label={`Delete ${gun.name}`}
-            title="Delete"
+            aria-label={`Archive ${gun.name}`}
+            title="Archive"
           >
-            🗑️
+            <Archive size={16} />
           </button>
         )}
       </div>

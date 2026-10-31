@@ -1,55 +1,11 @@
-import { Plus } from 'lucide-react'
+import { Plus, ShoppingBag } from 'lucide-react'
 import { useFavorites } from '../hooks/useFavorites'
-
-const NAV_ITEMS = [
-  { id: 'Catalog', label: 'Catalog' },
-  { id: 'Favorites', label: 'Favorites', hasBadge: true },
-  { id: 'Profile', label: 'Profile' },
-  { id: 'About', label: 'About' },
-  { id: 'Contact', label: 'Contact' },
-]
-
-function Header({ tab, onTab, onNavigateCreate }) {
-  const { favorites } = useFavorites()
-  const favCount = favorites ? favorites.length : 0
-
-  return (
-    <header className="header">
-      <div className="header-brand-wrap" onClick={() => onTab('Catalog')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <div className="header-logo-badge">
-          <img src="/logo.png" alt="Bore & Barrel" />
-        </div>
-        <span className="brand display">Bore &amp; Barrel</span>
-      </div>
-
-      <nav className="nav">
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className={tab === item.id ? 'nav-link active' : 'nav-link'}
-            onClick={() => onTab(item.id)}
-          >
-            {item.label}
-            {item.hasBadge && favCount > 0 && (
-              <span className="nav-badge">{favCount}</span>
-            )}
-          </button>
-        ))}
-      </nav>
-
-      {onNavigateCreate && (
-        <button
-          type="button"
-          className="btn btn--primary btn--sm header-cta"
-          onClick={onNavigateCreate}
-          title="Register new hardware"
-        >
-          <Plus size={15} /> Add Hardware
-        </button>
-      )}
-    </header>
-  )
+import { useCart } from '../hooks/useCart'
+const ITEMS = [{ id: 'Catalog', label: 'Catalog' }, { id: 'Favorites', label: 'Favorites' }, { id: 'Profile', label: 'Profile' }, { id: 'Cart', label: 'Merch & Cart' }]
+export default function Header({ tab, onTab, onNavigateCreate }) {
+  const { favorites } = useFavorites(), cart = useCart()
+  return <header className="header"><button className="header-brand-button" onClick={() => onTab('Catalog')} aria-label="Bore and Barrel home"><span className="header-logo-badge"><img src="/logo.png" alt="" /></span><span className="brand display">Bore & Barrel</span></button>
+    <nav className="nav" aria-label="Main navigation">{ITEMS.map((item) => { const count = item.id === 'Cart' ? cart.count : item.id === 'Favorites' ? favorites.length : 0; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} aria-current={tab === item.id ? 'page' : undefined} onClick={() => onTab(item.id)}>{item.id === 'Cart' && <ShoppingBag size={15} />}{item.label}{count > 0 && <span className="nav-badge">{count}</span>}</button> })}</nav>
+    <button className="btn btn--primary btn--sm header-cta" onClick={onNavigateCreate}><Plus size={15} /> Add Hardware</button>
+  </header>
 }
-
-export default Header

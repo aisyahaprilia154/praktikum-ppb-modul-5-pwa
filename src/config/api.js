@@ -35,6 +35,9 @@ const apiClient = axios.create({
 // ---------------------------------------------------------------------------
 apiClient.interceptors.request.use(
   (config) => {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      return Promise.reject(new Error('You are offline. Reconnect to sync changes.'))
+    }
     if (IS_SUPABASE && SUPABASE_KEY) {
       config.headers['apikey'] = SUPABASE_KEY
       if (!config.headers['Authorization']) {

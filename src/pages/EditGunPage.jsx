@@ -25,7 +25,7 @@ import ConfirmModal from '../components/modals/ConfirmModal'
  * EditGunPage — Edit an existing weapon / hardware item.
  * Supports updating specs, steps, image replacement, and draft management.
  */
-export default function EditGunPage({ gun, gunId, onBack, onSuccess }) {
+export default function EditGunPage({ gun, gunId, onBack, onSuccess, initialDraft }) {
   const targetId = gunId || gun?.id
 
   const [loading, setLoading] = useState(true)
@@ -55,7 +55,7 @@ export default function EditGunPage({ gun, gunId, onBack, onSuccess }) {
   const [steps, setSteps] = useState([''])
 
   // Draft modal
-  const [showDraftModal, setShowDraftModal] = useState(() => (targetId ? hasDraft(targetId) : false))
+  const [showDraftModal, setShowDraftModal] = useState(() => (!initialDraft && targetId ? hasDraft(targetId) : false))
   const [draftTimestamp, setDraftTimestamp] = useState(() => (targetId ? getDraftTimestamp(targetId) : null))
 
   // Fetch initial data
@@ -108,6 +108,12 @@ export default function EditGunPage({ gun, gunId, onBack, onSuccess }) {
             setSteps(['Standard manufacturer maintenance and cleaning protocol.'])
           }
 
+          if (initialDraft) {
+            if (initialDraft.formData) setFormData(initialDraft.formData)
+            if (initialDraft.specs) setSpecs(initialDraft.specs)
+            if (initialDraft.steps) setSteps(initialDraft.steps)
+            if (initialDraft.imagePreview) setCurrentImageUrl(initialDraft.imagePreview)
+          }
         } else {
           setError('Hardware record could not be loaded.')
         }
@@ -179,7 +185,9 @@ export default function EditGunPage({ gun, gunId, onBack, onSuccess }) {
     }
 
     setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    const reader = new FileReader()
+    reader.onload = () => setImagePreview(reader.result)
+    reader.readAsDataURL(file)
     setError('')
   }
 

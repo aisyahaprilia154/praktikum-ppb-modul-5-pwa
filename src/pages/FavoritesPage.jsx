@@ -127,7 +127,6 @@ export default function FavoritesPage({ onSelectGun, onNavigateCatalog }) {
                 key={gun.id || gun.name}
                 gun={gun}
                 onSelect={onSelectGun}
-                onFavoriteChange={refetch}
               />
             ))}
           </ul>
